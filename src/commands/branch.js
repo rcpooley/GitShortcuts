@@ -2,7 +2,7 @@ const stripAnsi = require('strip-ansi');
 const Util = require('../util');
 const template = require('../templates/branch');
 
-async function gb(args) {
+async function branch(args) {
     args.unshift('branch');
 
     const rawOut = await Util.git(args);
@@ -51,4 +51,4 @@ async function gb(args) {
     return out;
 }
 
-module.exports = gb;
+module.exports = branch;

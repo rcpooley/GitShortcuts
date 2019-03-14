@@ -18,7 +18,7 @@ module.exports = function (git) {
         files.forEach(file => {
             const num = git.getNumber(file);
             const type = file.type in typeNames ? typeNames[file.type] : 'unknown';
-            out += `#      ${type.padStart(9)}: ${C.Reset}[${num}]${color} ${file.name}\n`;
+            out += `#      ${type.padStart(9)}: ${C.Reset}[${num}]${color} ${file.displayName}\n`;
         });
         out += `#${C.Reset}\n`;
     };

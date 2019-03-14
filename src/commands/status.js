@@ -2,7 +2,7 @@ const stripAnsi = require('strip-ansi');
 const Util = require('../util');
 const template = require('../templates/status');
 
-async function gs(args) {
+async function status(args) {
     if (args.length > 0) {
         args.unshift('status');
         return await Util.git(args);
@@ -32,7 +32,17 @@ async function gs(args) {
     lines.forEach(line => {
         const x = line.charAt(0);
         const y = line.charAt(1);
-        const name = line.substring(3);
+        const displayName = line.substring(3);
+        let name = displayName;
+        const spl = name.split(' -> ');
+        if (spl.length === 2) {
+            name = spl[1];
+        }
+
+        const file = {
+            displayName,
+            name
+        };
 
         if (x === '#' && y === '#') {
             git.currentBranch = name;
@@ -40,25 +50,19 @@ async function gs(args) {
         }
 
         if (x === '?' && y === '?') {
-            git.files.untracked.push({
-                type: '?',
-                name
-            });
+            file.type = '?';
+            git.files.untracked.push(file);
             return;
         }
 
         if (x !== ' ') {
-            git.files.staged.push({
-                type: x,
-                name
-            });
+            file.type = x;
+            git.files.staged.push(file);
         }
 
         if (y !== ' ') {
-            git.files.unstaged.push({
-                type: y,
-                name
-            });
+            file.type = y;
+            git.files.unstaged.push(file);
         }
     });
 
@@ -69,4 +73,4 @@ async function gs(args) {
     return out;
 }
 
-module.exports = gs;
+module.exports = status;

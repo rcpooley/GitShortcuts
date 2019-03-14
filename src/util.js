@@ -70,25 +70,49 @@ class Util {
             if (!(num in map)) {
                 throw `Could not find file corresponding to [${num}]`;
             }
-            files.push(map[num]);
+            files.unshift(map[num]);
         };
 
-        for (let i = 0; i < args.length; i++) {
-            const arg = args[i];
+        const outArgs = args.slice();
+
+        while (outArgs.length > 0) {
+            const arg = outArgs[outArgs.length - 1];
             const spl = arg.split('-');
 
             if (Util.isInteger(arg)) {
                 addFile(arg);
             } else if (spl.length === 2 && Util.isInteger(spl[0]) && Util.isInteger(spl[1])) {
-                for (let j = parseInt(spl[0]); j <= parseInt(spl[1]); j++) {
+                for (let j = parseInt(spl[1]); j >= parseInt(spl[0]); j--) {
                     addFile(j);
                 }
             } else {
-                throw `Invalid argument: ${arg}`;
+                break;
             }
+
+            outArgs.splice(outArgs.length - 1, 1);
         }
 
-        return files;
+        return {
+            args: outArgs,
+            files
+        };
+    }
+
+    static async multiCommand(args, executor) {
+        const parsed = Util.parseRangeArgs(args);
+
+        for (let i = 0; i < parsed.files.length; i++) {
+            let out;
+            try {
+                out = await executor(parsed.args, parsed.files[i]);
+            } catch (e) {
+                out = e.toString();
+            }
+            if (out && out.length > 0) {
+                const lines = out.split('\n').map(line => `#     ${line.trim()}`);
+                console.log(lines.join('\n'));
+            }
+        }
     }
 
     static async getGitRoot() {

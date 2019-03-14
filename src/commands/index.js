@@ -1,9 +1,13 @@
-const ga = require('./ga');
-const gb = require('./gb');
-const gco = require('./gco');
-const gs = require('./gs');
-const gu = require('./gu');
+const add = require('./add');
+const branch = require('./branch');
+const checkout = require('./checkout');
+const status = require('./status');
+const unstage = require('./unstage');
 
 module.exports = {
-    ga, gb, gco, gs, gu
+    ga: add,
+    gb: branch,
+    gco: checkout,
+    gs: status,
+    gu: unstage
 };
