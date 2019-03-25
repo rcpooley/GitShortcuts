@@ -3,10 +3,11 @@ const path = require('path');
 const pkg = require('pkg');
 const { exec } = require('child_process');
 const commands = require('./src/commands');
+const config = require('./config.json');
 
-const OUT_DIRECTORY = 'bin';
+const OUT_DIRECTORY = config.binaryDirectory;
 
-const MAIN_BINARY = 'gitshortcuts';
+const MAIN_BINARY = config.binaryName;
 
 const SH_SCRIPT = `#!/bin/bash\n${MAIN_BINARY} CMD $@`;
 
