@@ -1,5 +1,4 @@
 const commands = require('./commands');
-const Util = require('./util');
 
 if (process.argv.length < 3) {
     console.log('No command provided');

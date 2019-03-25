@@ -3,9 +3,7 @@ const Util = require('../util');
 const template = require('../templates/branch');
 
 async function branch(args) {
-    args.unshift('branch');
-
-    const rawOut = await Util.git(args);
+    const rawOut = await Util.git(['branch', ...Util.replaceArgs(args)]);
     const colorlessOut = stripAnsi(rawOut);
 
     const lines = colorlessOut.split('\n')

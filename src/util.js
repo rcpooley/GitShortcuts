@@ -52,59 +52,76 @@ class Util {
     static replaceArgs(args) {
         const map = Util.loadMap();
 
-        for (let i = 0; i < args.length; i++) {
-            if (Util.isInteger(args[i]) && args[i] in map) {
-                args[i] = map[args[i]].name;
+        const getFile = (num) => {
+            if (!(num in map)) {
+                throw `Could not find file corresponding to [${num}]`;
             }
-        }
+            return map[num].name;
+        };
 
-        return args;
+        const outArgs = [];
+
+        args.forEach(arg => {
+            const spl = arg.split('-');
+            if (arg.startsWith('-')) {
+                outArgs.push(arg);
+            } else if (Util.isInteger(arg)) {
+                outArgs.push(getFile(arg));
+            } else if (spl.length === 2 && Util.isInteger(spl[0]) && Util.isInteger(spl[1])) {
+                for (let j = parseInt(spl[0]); j <= parseInt(spl[1]); j++) {
+                    outArgs.push(getFile(j));
+                }
+            } else {
+                outArgs.push(arg);
+            }
+        });
+
+        return outArgs;
     }
 
-    static parseRangeArgs(args) {
-        const map = Util.loadMap();
-
+    static parseArgs(args) {
+        const outArgs = [];
         const files = [];
+
+        const map = Util.loadMap();
 
         const addFile = (num) => {
             if (!(num in map)) {
                 throw `Could not find file corresponding to [${num}]`;
             }
-            files.unshift(map[num]);
+            files.push(map[num]);
         };
 
-        const outArgs = args.slice();
-
-        while (outArgs.length > 0) {
-            const arg = outArgs[outArgs.length - 1];
+        args.forEach(arg => {
             const spl = arg.split('-');
 
-            if (Util.isInteger(arg)) {
+            if (arg.startsWith('-')) {
+                outArgs.push(arg);
+            } else if (Util.isInteger(arg)) {
                 addFile(arg);
             } else if (spl.length === 2 && Util.isInteger(spl[0]) && Util.isInteger(spl[1])) {
-                for (let j = parseInt(spl[1]); j >= parseInt(spl[0]); j--) {
+                for (let j = parseInt(spl[0]); j <= parseInt(spl[1]); j++) {
                     addFile(j);
                 }
             } else {
-                break;
+                files.push({name: arg, type: 'argument'});
             }
-
-            outArgs.splice(outArgs.length - 1, 1);
-        }
+        });
 
         return {
             args: outArgs,
-            files
+            files,
+            names: files.map(file => file.name)
         };
     }
 
     static async multiCommand(args, executor) {
-        const parsed = Util.parseRangeArgs(args);
+        const parsed = Util.parseArgs(args);
 
         for (let i = 0; i < parsed.files.length; i++) {
-            let out;
+            let out = '';
             try {
-                out = await executor(parsed.args, parsed.files[i]);
+                await executor(parsed.args, parsed.files[i]);
             } catch (e) {
                 out = e.toString();
             }
