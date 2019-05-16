@@ -2,16 +2,25 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { exec } = require('child_process');
+const readline = require('readline');
 
 const TMP_FILE = path.join(os.tmpdir(), 'gitshortcuts.json');
 
 class Util {
     static git(cmd) {
+        return Util.cmd('git -c color.ui=always', cmd);
+    }
+
+    static hg(cmd) {
+        return Util.cmd('hg --color always', cmd);
+    }
+
+    static cmd(base, cmd) {
         if (Array.isArray(cmd)) {
             cmd = cmd.join(' ');
         }
         return new Promise((resolve, reject) => {
-            exec(`git -c color.ui=always ${cmd}`, (error, stdout, stderr) => {
+            exec(`${base} ${cmd}`, (error, stdout, stderr) => {
                 if (error) {
                     if (!error.message.toLowerCase().startsWith('command failed')) {
                         reject(error);
@@ -126,15 +135,34 @@ class Util {
                 out = e.toString();
             }
             if (out && out.length > 0) {
-                const lines = out.split('\n').map(line => `#     ${line.trim()}`);
-                console.log(lines.join('\n'));
+                console.log(Util.formatOutput(out));
             }
         }
+    }
+
+    static formatOutput(out) {
+        const lines = out.split('\n').map(line => `#     ${line.trim()}`);
+        return lines.join('\n');
     }
 
     static async getGitRoot() {
         const out = await Util.git('rev-parse --show-toplevel');
         return out.trim();
+    }
+
+    static input(prompt) {
+        return new Promise((resolve) => {
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+
+            rl.question(prompt, (answer) => {
+                rl.close();
+
+                resolve(answer);
+            });
+        })
     }
 }
 
