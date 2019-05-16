@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const pkg = require('pkg');
+const rimraf = require('rimraf');
 const { exec } = require('child_process');
-const commands = require('./src/commands');
+const commands = require('./src/modules/commands');
 const config = require('./config.json');
 
 const OUT_DIRECTORY = config.binaryDirectory;
@@ -12,6 +13,10 @@ const MAIN_BINARY = config.binaryName;
 const SH_SCRIPT = `#!/bin/bash\n${MAIN_BINARY} CMD $@`;
 
 const BATCH_SCRIPT = `@echo off\n${MAIN_BINARY} CMD %*`;
+
+function rimrafProm(dir) {
+    return new Promise(resolve => rimraf(dir, resolve));
+}
 
 function cmd(cmd, opts) {
     return new Promise((resolve, reject) => {
@@ -49,6 +54,8 @@ async function createBinary(command) {
 }
 
 async function build() {
+    await rimrafProm(OUT_DIRECTORY);
+
     await pkg.exec(['src/main.js', '--targets', 'node10', '--output', path.join(OUT_DIRECTORY, MAIN_BINARY)]);
 
     const cmds = Object.keys(commands);

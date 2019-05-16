@@ -1,4 +1,4 @@
-const modules = require('./modules');
+const commands = require('./modules/commands');
 
 if (process.argv.length < 3) {
     console.log('No command provided');
@@ -8,11 +8,7 @@ if (process.argv.length < 3) {
 const cmd = process.argv[2];
 const args = process.argv.slice(3);
 
-// Get all commands
-let commands = {};
-Object.values(modules).forEach(cmds => {
-    commands = Object.assign(commands, cmds);
-});
+
 
 if (!(cmd in commands)) {
     console.log(`Unrecognized command: ${cmd}`);

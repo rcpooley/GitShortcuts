@@ -11,6 +11,7 @@
   "dependencies": {
     "fs-extra": "^7.0.1",
     "pkg": "^4.3.7",
+    "rimraf": "^2.6.3",
     "strip-ansi": "^5.1.0",
     "winreg": "^1.2.4"
   }
