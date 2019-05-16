@@ -1,8 +1,8 @@
-const add = require('./add');
-const branch = require('./branch');
-const checkout = require('./checkout');
-const status = require('./status');
-const unstage = require('./unstage');
+const add = require('../modules/git/commands/add');
+const branch = require('../modules/git/commands/branch');
+const checkout = require('../modules/git/commands/checkout');
+const status = require('../modules/git/commands/status');
+const unstage = require('../modules/git/commands/unstage');
 
 const hg = require('./hg');
 const hgm = require('./hgMulti');

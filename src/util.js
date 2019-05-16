@@ -7,10 +7,6 @@ const readline = require('readline');
 const TMP_FILE = path.join(os.tmpdir(), 'gitshortcuts.json');
 
 class Util {
-    static git(cmd) {
-        return Util.cmd('git -c color.ui=always', cmd);
-    }
-
     static hg(cmd) {
         return Util.cmd('hg --color always', cmd);
     }
@@ -61,9 +57,9 @@ class Util {
     static replaceArgs(args) {
         const map = Util.loadMap();
 
-        const getFile = (num) => {
+        const getEntry = (num) => {
             if (!(num in map)) {
-                throw `Could not find file corresponding to [${num}]`;
+                throw `Could not find entry corresponding to [${num}]`;
             }
             return map[num].name;
         };
@@ -75,10 +71,10 @@ class Util {
             if (arg.startsWith('-')) {
                 outArgs.push(arg);
             } else if (Util.isInteger(arg)) {
-                outArgs.push(getFile(arg));
+                outArgs.push(getEntry(arg));
             } else if (spl.length === 2 && Util.isInteger(spl[0]) && Util.isInteger(spl[1])) {
                 for (let j = parseInt(spl[0]); j <= parseInt(spl[1]); j++) {
-                    outArgs.push(getFile(j));
+                    outArgs.push(getEntry(j));
                 }
             } else {
                 outArgs.push(arg);
@@ -90,47 +86,44 @@ class Util {
 
     static parseArgs(args) {
         const outArgs = [];
-        const files = [];
+        const entries = [];
 
         const map = Util.loadMap();
 
-        const addFile = (num) => {
+        const addEntry = (num) => {
             if (!(num in map)) {
-                throw `Could not find file corresponding to [${num}]`;
+                throw `Could not find entry corresponding to [${num}]`;
             }
-            files.push(map[num]);
+            entries.push(map[num]);
         };
 
         args.forEach(arg => {
             const spl = arg.split('-');
 
-            if (arg.startsWith('-')) {
-                outArgs.push(arg);
-            } else if (Util.isInteger(arg)) {
-                addFile(arg);
+            if (Util.isInteger(arg)) {
+                addEntry(arg);
             } else if (spl.length === 2 && Util.isInteger(spl[0]) && Util.isInteger(spl[1])) {
                 for (let j = parseInt(spl[0]); j <= parseInt(spl[1]); j++) {
-                    addFile(j);
+                    addEntry(j);
                 }
             } else {
-                files.push({name: arg, type: 'argument'});
+                outArgs.push(arg);
             }
         });
 
         return {
             args: outArgs,
-            files,
-            names: files.map(file => file.name)
+            entries
         };
     }
 
     static async multiCommand(args, executor) {
         const parsed = Util.parseArgs(args);
 
-        for (let i = 0; i < parsed.files.length; i++) {
-            let out = '';
+        for (let i = 0; i < parsed.entries.length; i++) {
+            let out;
             try {
-                await executor(parsed.args, parsed.files[i]);
+                out = await executor(parsed.args, parsed.entries[i]);
             } catch (e) {
                 out = e.toString();
             }
@@ -143,11 +136,6 @@ class Util {
     static formatOutput(out) {
         const lines = out.split('\n').map(line => `#     ${line.trim()}`);
         return lines.join('\n');
-    }
-
-    static async getGitRoot() {
-        const out = await Util.git('rev-parse --show-toplevel');
-        return out.trim();
     }
 
     static input(prompt) {
@@ -163,6 +151,27 @@ class Util {
                 resolve(answer);
             });
         })
+    }
+
+    static renderTemplate(template, type, data) {
+        const map = {};
+        let nextNumber = 1;
+
+        const getNumber = (name, data) => {
+            const num = nextNumber++;
+            map[num] = {
+                type,
+                name,
+                data
+            };
+            return num;
+        };
+
+        const out = template(getNumber, data);
+
+        Util.saveMap(map);
+
+        return out;
     }
 }
 

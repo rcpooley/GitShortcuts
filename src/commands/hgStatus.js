@@ -1,6 +1,6 @@
 const stripAnsi = require('strip-ansi');
 const Util = require('../util');
-const template = require('../templates/status');
+const template = require('../modules/git/templates/status');
 
 async function status(args) {
     if (args.length > 0) {

@@ -1,4 +1,4 @@
-const Util = require('../util');
+const {Util, GitUtil} = require('../gitUtil');
 const status = require('./status');
 
 async function unstage(args) {
@@ -7,7 +7,7 @@ async function unstage(args) {
 
         const cmd = file.type === 'A' ? 'rm --cached' : 'reset HEAD';
 
-        return Util.git(`${cmd} ${file.name}`);
+        return GitUtil.git(`${cmd} ${file.name}`);
     });
 
     return await status([]);
