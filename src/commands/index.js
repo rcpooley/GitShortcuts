@@ -7,6 +7,7 @@ const unstage = require('./unstage');
 const hg = require('./hg');
 const hgm = require('./hgMulti');
 const hgCommit = require('./hgCommit');
+const hgLog = require('./hgLog');
 const hgStatus = require('./hgStatus');
 
 module.exports = {
@@ -19,6 +20,7 @@ module.exports = {
     ham: hg('amend'),
     hc: hgCommit,
     hf: hgm('forget', 'Forgetting '),
+    hl: hgLog,
     hr: hgm('remove', 'Removing '),
     hs: hgStatus,
 };

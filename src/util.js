@@ -12,7 +12,7 @@ class Util {
     }
 
     static hg(cmd) {
-        return Util.cmd('hg', cmd);
+        return Util.cmd('hg --color always', cmd);
     }
 
     static cmd(base, cmd) {
