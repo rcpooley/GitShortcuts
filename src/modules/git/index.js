@@ -5,6 +5,7 @@ const checkout = require('./commands/checkout');
 const commit = require('./commands/commit');
 const status = require('./commands/status');
 const unstage = require('./commands/unstage');
+const diff = require('./commands/diff');
 
 module.exports = {
     ga: add,
@@ -14,4 +15,5 @@ module.exports = {
     gc: commit,
     gs: status,
     gu: unstage,
+    gd: diff,
 };
