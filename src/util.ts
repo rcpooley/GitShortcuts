@@ -44,7 +44,7 @@ export class Util {
                     typeof stdout === 'string' ? stdout : stdout.toString();
                 // For git commands, success output often comes in stderr (like push status)
                 // So we combine them if successful
-                resolve((stdoutStr + '\n' + stderrStr).trim());
+                resolve((stdoutStr + '\n' + stderrStr).trim() + '\n');
             });
         });
     }
