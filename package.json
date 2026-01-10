@@ -2,17 +2,27 @@
   "name": "git-shortcuts",
   "version": "1.0.0",
   "description": "",
+  "main": "dist/src/index.js",
+  "bin": {
+    "git-shortcuts": "dist/src/index.js"
+  },
   "scripts": {
-    "build": "node build.js"
+    "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "fs-extra": "^7.0.1",
-    "pkg": "^4.3.7",
-    "rimraf": "^2.6.3",
-    "strip-ansi": "^5.1.0",
-    "winreg": "^1.2.4"
+    "rimraf": "^2.7.1",
+    "strip-ansi": "^6.0.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^25.0.6",
+    "@types/rimraf": "^3.0.2",
+    "@types/yargs": "^17.0.35",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
