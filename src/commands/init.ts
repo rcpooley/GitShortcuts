@@ -13,6 +13,7 @@ export async function init(args: string[]): Promise<string> {
     gam: 'git-shortcuts gam',
     gco: 'git-shortcuts gco',
     gb: 'git-shortcuts gb',
+    gp: 'git-shortcuts gp',
     gs: 'git-shortcuts gs',
     gu: 'git-shortcuts gu',
     gd: 'git-shortcuts gd'

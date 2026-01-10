@@ -5,6 +5,7 @@ import { branch } from './commands/branch';
 import { checkout } from './commands/checkout';
 import { commit } from './commands/commit';
 import { diff } from './commands/diff';
+import { push } from './commands/push';
 import { status } from './commands/status';
 import { unstage } from './commands/unstage';
 
@@ -14,6 +15,7 @@ export const commands: { [key: string]: Command } = {
   gb: branch,
   gco: checkout,
   gc: commit,
+  gp: push,
   gs: status,
   gu: unstage,
   gd: diff,
