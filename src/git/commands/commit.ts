@@ -1,8 +1,12 @@
-import { Util } from '../../util';
 import { GitUtil } from '../gitUtil';
 
 export async function commit(args: string[]): Promise<string> {
-  const message = await Util.input('Commit message: ');
+  const message = args.join(' ');
 
-  return await GitUtil.git(['commit', ...Util.replaceArgs(args), '-m', `"${message}"`]);
+  if (!message) {
+    console.error('Usage: gc <commit message>');
+    process.exit(1);
+  }
+
+  return await GitUtil.git(['commit', '-m', `"${message}"`]);
 }
