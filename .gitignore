@@ -10,3 +10,6 @@ dist/
 
 # Logs
 *.log
+
+/git-shortcuts.js
+/.claude/

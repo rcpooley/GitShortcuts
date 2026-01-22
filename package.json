@@ -7,7 +7,8 @@
     "git-shortcuts": "dist/src/index.js"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "bundle": "esbuild dist/src/index.js --bundle --platform=node --outfile=git-shortcuts.js"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +23,7 @@
     "@types/node": "^25.0.6",
     "@types/rimraf": "^3.0.2",
     "@types/yargs": "^17.0.35",
+    "esbuild": "^0.27.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
